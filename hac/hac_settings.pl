@@ -25,6 +25,7 @@ path(configurations, "/platform/config").
 path(validate_configuration, "/platform/config/valuechanged").
 path(store_configuration, "/platform/configstore").
 path(delete_configuration, "/platform/configdelete").
+path(clear_cache, "/monitoring/cache/regionCache/clear").
 
 get_url(hac, URL) :-
   get_hac_url(URL).

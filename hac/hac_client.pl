@@ -1,5 +1,6 @@
 :- module(hac_client, [
   hac_get/2,
+  hac_post/1,
   hac_post/2,
   hac_post/3,
   hac_post_multipart/2,
@@ -23,6 +24,9 @@ hac_get(Path, FormattedResponse) :-
     handle_exception(Exception)
   ),
   format_response(Response, FormattedResponse), !.
+
+hac_post(Path) :-
+  hac_post(Path, []).
 
 hac_post(Path, Form) :-
   hac_post(Path, Form, _).
