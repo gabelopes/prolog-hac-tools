@@ -28,11 +28,11 @@ run :-
   get_content(Content),
   extract_options([encoding, maxThreads, validationEnum, '_legacyMode', '_enableCodeExecution', '_distributedMode', '_sldEnabled'], Options),
   Predicate =.. [Action, Content, Options, Results],
-  login,
+  login, !,
   call(Predicate),
   output_results(Action, Results).
 
-get_action(validate_impex) :-
+get_action(validate_impex_import) :-
   get_option(validate, true).
 get_action(import_impex_script) :-
   get_option(import_script, true).
@@ -51,7 +51,7 @@ output_results(import_impex, success) :-
   writeln("Import finished successfully").
 output_results(import_impex_script, success) :-
   writeln("Import finished successfully").
-output_results(validate_impex, success) :-
+output_results(validate_impex_import, success) :-
   writeln("Import script is valid").
 output_results(_, errors(Errors)) :-
   maplist(writeln(user_error), Errors).

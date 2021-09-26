@@ -18,9 +18,13 @@ default_settings(_{
 }).
 
 path(login, "/j_spring_security_check").
-path(validate_impex, "/console/impex/import/validate").
+path(validate_impex_import, "/console/impex/import/validate").
 path(import_impex, "./console/impex/import").
 path(import_impex_script, "/console/impex/import/upload").
+path(configurations, "/platform/config").
+path(validate_configuration, "/platform/config/valuechanged").
+path(store_configuration, "/platform/configstore").
+path(delete_configuration, "/platform/configdelete").
 
 get_url(hac, URL) :-
   get_hac_url(URL).
