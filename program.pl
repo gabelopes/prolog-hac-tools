@@ -1,10 +1,13 @@
+:- use_module(cli).
+
 start :-
   current_prolog_flag(argv, [Module|_]),
   get_module(Module, _, Initialize, Run),
-  call(Initialize), !,
+  call((Initialize, !)),
   call(Run),
   halt.
 start :-
+  write_help,
   halt(2).
 
 include_modules :-

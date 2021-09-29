@@ -6,6 +6,7 @@
   require_option/2,
   extract_options/2,
   get_help/1,
+  write_help/0,
   write_help/1
 ]).
 
