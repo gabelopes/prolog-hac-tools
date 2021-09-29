@@ -1,4 +1,5 @@
 :- module(hac_settings, [
+  register_path/2,
   get_url/2,
   get_settings/1,
   get_credentials/2
@@ -7,6 +8,8 @@
 :- use_module(library(http/json)).
 :- use_module(utility/dict).
 :- use_module(cli).
+
+:- dynamic path/2.
 
 default_settings(_{
   host: "https://localhost:9002",
@@ -18,14 +21,12 @@ default_settings(_{
 }).
 
 path(login, "/j_spring_security_check").
-path(validate_impex_import, "/console/impex/import/validate").
-path(import_impex, "./console/impex/import").
-path(import_impex_script, "/console/impex/import/upload").
-path(configurations, "/platform/config").
-path(validate_configuration, "/platform/config/valuechanged").
-path(store_configuration, "/platform/configstore").
-path(delete_configuration, "/platform/configdelete").
-path(clear_cache, "/monitoring/cache/regionCache/clear").
+
+register_path(Name, Path) :-
+  \+ path(Name, _),
+  assertz(path(Name, Path)).
+register_path(Name, _) :-
+  format(user_error, "Path with name '~w' already declared.\n", [Name]).
 
 get_url(hac, URL) :-
   get_hac_url(URL).

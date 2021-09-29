@@ -3,11 +3,16 @@
   run/0
 ]).
 
+:- use_module('../../hac/hac_settings').
 :- use_module('../../hac/hac').
 :- use_module('../../cli').
 :- use_module(config).
 
 initialize :-
+  register_path(configurations, "/platform/config"),
+  register_path(validate_configuration, "/platform/config/valuechanged"),
+  register_path(store_configuration, "/platform/configstore"),
+  register_path(delete_configuration, "/platform/configdelete"),
   register_specifications([
     [opt(get), type(boolean), default(true), shortflags([g]), longflags([get])],
     [opt(set), type(boolean), default(false), shortflags([s]), longflags([set])],

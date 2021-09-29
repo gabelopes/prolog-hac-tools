@@ -11,10 +11,10 @@
 select_json(Selection, JSONTerm) :-
   is_json_term(JSONTerm),
   atom_json_dict(JSONTerm, JSONDictionary, []), !,
-  select_dictionary(Selection, JSONDictionary).
+  select_dictionary(Selection, JSONDictionary), !.
 select_json(Selection, JSONDictionary) :-
   atom_json_dict(JSONTerm, JSONDictionary, []),
-  select_json(Selection, JSONTerm).
+  select_json(Selection, JSONTerm), !.
 
 select_dictionary([], []).
 select_dictionary([Selector|Selectors], [Property|Properties]) :-
