@@ -6,7 +6,7 @@
 ]).
 
 :- use_module(library(http/json)).
-:- use_module(utility/dict).
+:- use_module(library(unison)).
 :- use_module(cli).
 
 :- dynamic path/2.

@@ -6,9 +6,9 @@
   remove_configuration/2
 ]).
 
+:- use_module(library(unison)).
 :- use_module('../../hac/hac_client').
 :- use_module('../../html/dom').
-:- use_module('../../utility/dict').
 
 get_configurations(Configurations) :-
   hac_get(configurations, DOM),

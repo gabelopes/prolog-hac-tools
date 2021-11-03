@@ -3,9 +3,9 @@
   run/0
 ]).
 
+:- use_module(library(unison)).
 :- use_module('../../hac/hac_settings').
 :- use_module('../../hac/hac').
-:- use_module('../../utility/dict').
 :- use_module('../../utility/table').
 :- use_module('../../cli').
 :- use_module(fs).
