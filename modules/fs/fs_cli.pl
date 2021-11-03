@@ -13,6 +13,7 @@
 initialize :-
   register_path(flexible_search, "/console/flexsearch/execute"),
   register_specifications([
+    [opt(header), type(boolean), default(false), shortflags(['H']), longflags([header])],
     [opt(commit), type(boolean), default(false), shortflags([c]), longflags([commit])],
     [opt(verbose), type(boolean), default(false), shortflags([v]), longflags([verbose])],
     [opt(format), type(boolean), default(false), shortflags([f]), longflags([format])],
@@ -33,6 +34,10 @@ output_results(Results) :-
   Exception \= null,
   output_exception(Exception).
 output_results(Results) :-
+  get_option(header, true),
+  output_statistics(Results),
+  output_result_header(Results).
+output_results(Results) :-
   output_statistics(Results),
   output_result_list(Results).
 
@@ -51,6 +56,18 @@ output_statistics(Results) :-
   format("Used catalog versions: ~w~n~n", [CatalogVersions]),
   format("Replaced parameters: ~w~n~n", [Parameters]).
 output_statistics(_).
+
+output_result_header(Results) :-
+  _{ headers: Headers } :<< Results,
+  as_result_list(Headers, ResultList),
+  output_result_list(_{
+    headers: ["Headers"],
+    resultList: ResultList
+  }).
+
+as_result_list([], []).
+as_result_list([Element|List], [[Element]|ResultList]) :-
+  as_result_list(List, ResultList).
 
 output_result_list(Results) :-
   get_option(format, true),

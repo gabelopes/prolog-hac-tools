@@ -6,7 +6,7 @@
 :- use_module('../../cli').
 
 execute_search(Query, Results) :-
-  get_option(max, MaxCount),
+  get_max_count(MaxCount),
   get_option(as, As),
   get_option(locale, Locale),
   get_option(commit, Commit),
@@ -18,3 +18,8 @@ execute_search(Query, Results) :-
     locale=Locale,
     commit=Commit
   ], Results).
+
+get_max_count(0) :-
+  get_option(header, true).
+get_max_count(MaxCount) :-
+  get_option(max, MaxCount).
