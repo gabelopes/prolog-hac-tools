@@ -37,20 +37,26 @@ get_configuration(Key, _) :-
 
 set_configuration(Key, Value, Status) :-
   validate_configuration(Key, Value, Status),
+  Status \= unchanged,
   hac_post(store_configuration, [key(Key), val(Value)]).
 set_configuration(Key, Value, _) :-
-  format(string(Exception), "Invalid configuration '~w' => '~w'.", [Key, Value]),
-  throw(Exception).
+  format("Configuration already exists '~w' => '~w'.~n", [Key, Value]),
+  halt(0).
 
 validate_configuration(Key, Value, Status) :-
   hac_post(validate_configuration, [key(Key), val(Value)], JSON),
   _{ validationError: false } :<< JSON, !,
   get_validation_status(JSON, Status).
+validate_configuration(Key, Value, _) :-
+  format(string(Exception), "Invalid configuration '~w' => '~w'.", [Key, Value]),
+  throw(Exception).
 
 get_validation_status(JSON, created) :-
   _{ isNew: true } :<< JSON.
 get_validation_status(JSON, updated) :-
   _{ changed: true } :<< JSON.
+get_validation_status(JSON, unchanged) :-
+  _{ changed: false } :<< JSON.
 
 remove_configuration(Key, success) :-
   hac_post(delete_configuration, [key(Key)]).
