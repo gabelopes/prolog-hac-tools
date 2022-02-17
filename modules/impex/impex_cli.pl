@@ -12,6 +12,8 @@ initialize :-
   register_path(validate_impex_import, "/console/impex/import/validate"),
   register_path(import_impex, "./console/impex/import"),
   register_path(import_impex_script, "/console/impex/import/upload"),
+  % register_path(export_impex, "/console/impex/export"),
+  % register_path(export_impex_script, "/console/impex/export"),
   register_specifications([
     [opt(import), type(boolean), default(true), shortflags([i]), longflags([import])],
     [opt(import_script), type(boolean), default(false), shortflags([s]), longflags(['import-script'])],
