@@ -143,6 +143,8 @@ get_output_properties([], []).
 get_output_properties([Character|Characters], [Property|Properties]) :-
   output_property(Character, Property),
   get_output_properties(Characters, Properties).
+get_output_properties([_|Characters], [_|Properties]) :-
+  get_output_properties(Characters, Properties).
 
 output_property(r, executionResult).
 output_property(o, outputText).
