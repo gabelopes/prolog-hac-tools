@@ -42,22 +42,65 @@ get_action(validate_impex_import) :-
   get_option(validate, true).
 get_action(import_impex_script) :-
   get_option(import_script, true).
-get_action(import_impex) :-
+get_action(import_impexes) :-
   require_option(import, true).
 
-get_content(Content) :-
+get_content(Contents) :-
   get_option(file, true),
-  get_arguments([Filename|_]),
-  read_file_to_string(Filename, Content, []).
-get_content(Content) :-
+  get_arguments(Filenames),
+  findall(
+    content(Filename, Content),
+    (
+      member(Filename, Filenames),
+      read_file_to_string(Filename, Content, [])
+    ),
+    Contents
+  ).
+get_content(Contents) :-
   require_option(raw, true),
-  get_arguments([Content|_]).
+  get_arguments(Contents),
+  findall(
+    content(Argument, Content),
+    (
+      nth1(Index, Contents, Content),
+      format(string(Argument), "Impex #~w", [Index])
+    ),
+    Contents
+  ).
 
-output_results(import_impex, success) :-
-  writeln("Import finished successfully").
-output_results(import_impex_script, success) :-
-  writeln("Import finished successfully").
-output_results(validate_impex_import, success) :-
-  writeln("Import script is valid").
-output_results(_, errors(Errors)) :-
-  maplist(writeln(user_error), Errors).
+output_results(_, []).
+output_results(validate_impex_import, [result(ImpexPath, success)|Results]) :-
+  filename(ImpexPath, ImpexName),
+  ansi_format([bold, fg(green)], "~w -> Import script is valid~n", [ImpexName]),
+  output_results(validate_impex_import, Results).
+output_results(Action, [result(ImpexPath, success)|Results]) :-
+  filename(ImpexPath, ImpexName),
+  ansi_format([bold, fg(green)], "~w -> Import finished successfully~n", [ImpexName]),
+  output_results(Action, Results).
+output_results(Action, [result(ImpexPath, errors(Errors))|Results]) :-
+  filename(ImpexPath, ImpexName),
+  with_output_to(
+    user_error,
+    ansi_format([bold, fg(red)], "~w -> There were errors while importing:~n", [ImpexName])
+  ),
+  forall(
+    nth1(ErrorNumber, Errors, Error),
+    (
+      with_output_to(
+        user_error,
+        ansi_format([bold, fg(white), bg(red)], "START Error #~w", [ErrorNumber])
+      ),
+      writeln(user_error, Error),
+      with_output_to(
+        user_error,
+        ansi_format([bold, fg(white), bg(red)], "END Error #~w", [ErrorNumber])
+      ),
+      nl(user_error),
+      nl(user_error)
+    )
+  ),
+  output_results(Action, Results).
+
+filename(Path, Name) :-
+  re_replace("\\\\"/g, "/", Path, NormalPath),
+  file_base_name(NormalPath, Name).
