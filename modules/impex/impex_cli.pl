@@ -58,11 +58,11 @@ get_content(Contents) :-
   ).
 get_content(Contents) :-
   require_option(raw, true),
-  get_arguments(Contents),
+  get_arguments(PositionalArguments), !,
   findall(
     content(Argument, Content),
     (
-      nth1(Index, Contents, Content),
+      nth1(Index, PositionalArguments, Content),
       format(string(Argument), "Impex #~w", [Index])
     ),
     Contents
