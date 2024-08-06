@@ -16,7 +16,7 @@ initialize :-
     [opt(header), type(boolean), default(false), shortflags(['H']), longflags([header])],
     [opt(commit), type(boolean), default(false), shortflags([c]), longflags([commit])],
     [opt(verbose), type(boolean), default(false), shortflags([v]), longflags([verbose])],
-    [opt(format), type(boolean), default(false), shortflags([f]), longflags([format])],
+    [opt(format), type(boolean), default(false), shortflags(['F']), longflags([format])],
     [opt(max), type(integer), default(200), shortflags([m]), longflags([max])],
     [opt(locale), type(atom), default(en), shortflags([l]), longflags([locale])],
     [opt(as), type(atom), default(admin), longflags([as])],

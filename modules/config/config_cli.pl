@@ -6,6 +6,7 @@
 :- use_module('../../hac/hac_settings').
 :- use_module('../../hac/hac').
 :- use_module('../../cli').
+:- use_module('../../utility/table').
 :- use_module(config).
 
 initialize :-
@@ -18,7 +19,8 @@ initialize :-
     [opt(set), type(boolean), default(false), shortflags([s]), longflags([set])],
     [opt(remove), type(boolean), default(false), shortflags([r]), longflags([remove])],
     [opt(list), type(boolean), default(false), shortflags([l]), longflags([list])],
-    [opt(filter), type(boolean), default(false), shortflags([f]), longflags([filter])]
+    [opt(filter), type(boolean), default(false), shortflags([f]), longflags([filter])],
+    [opt(format), type(boolean), default(false), shortflags(['F']), longflags([format])]
   ]).
 
 run :-
@@ -26,7 +28,7 @@ run :-
   get_arguments(Arguments),
   take(Arity, Arguments, TakenArguments),
   append(TakenArguments, [Result], Parameters),
-  Predicate =.. [Action|Parameters],
+  Predicate =.. [Action|Parameters], !,
   login, !,
   catch(call(Predicate), Exception, (output_exception(Exception), !, fail)),
   output_result(Action, Result),
@@ -49,7 +51,15 @@ get_action(get_configuration/1) :-
   require_option(get, true).
 
 output_result(get_configurations, Configurations) :-
+  get_option(format, true),
+  to_table_rows(Configurations, ConfigurationsRows),
+  print_table(["Configuration", "Value"], ConfigurationsRows).
+output_result(get_configurations, Configurations) :-
   maplist(write_configuration, Configurations).
+output_result(filter_configurations, Configurations) :-
+  get_option(format, true),
+  to_table_rows(Configurations, ConfigurationsRows),
+  print_table(["Configuration", "Value"], ConfigurationsRows).
 output_result(filter_configurations, Configurations) :-
   maplist(write_configuration, Configurations).
 output_result(get_configuration, Value) :-
@@ -66,3 +76,7 @@ output_exception(Exception) :-
 
 write_configuration(Key=Value) :-
   format("~w=~w", [Key, Value]), nl.
+
+to_table_rows([], []).
+to_table_rows([Key=Value|Pairs], [[Key, Value]|Rows]) :-
+  to_table_rows(Pairs, Rows).
