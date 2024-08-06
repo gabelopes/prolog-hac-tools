@@ -4,9 +4,26 @@ start :-
   current_prolog_flag(argv, [Module|_]),
   get_module(Module, _, Initialize, Run),
   call((Initialize, !)),
-  call(Run),
+  catch(
+    call(Run),
+    Exception,
+    handle_exception(Exception)
+  ),
   halt.
 start :-
+  write_help,
+  halt(2).
+
+handle_exception(error(ErrorMessage)) :-
+  write(user_error, ErrorMessage),
+  halt(1).
+handle_exception(error) :-
+  halt(1).
+handle_exception(help(ErrorMessage)) :-
+  write(user_error, ErrorMessage),
+  write_help,
+  halt(2).
+handle_exception(help) :-
   write_help,
   halt(2).
 

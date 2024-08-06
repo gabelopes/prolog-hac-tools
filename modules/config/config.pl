@@ -15,7 +15,7 @@ get_configurations(Configurations) :-
   query(DOM, "#props input.configValue", Inputs),
   extract_configurations(Inputs, Configurations), !.
 get_configurations(_) :-
-  throw("Could not retrieve configurations.").
+  throw(error("Could not retrieve configurations.")).
 
 filter_configurations(Keyword, FilteredConfigurations) :-
   get_configurations(Configurations),
@@ -33,15 +33,14 @@ get_configuration(Key, Value) :-
   member(Key=Value, Configurations).
 get_configuration(Key, _) :-
   format(string(Exception), "Could not find configuration for key '~w'.", [Key]),
-  throw(Exception).
+  throw(error(Exception)).
 
 set_configuration(Key, Value, Status) :-
   validate_configuration(Key, Value, Status),
   Status \= unchanged,
   hac_post(store_configuration, [key(Key), val(Value)]).
 set_configuration(Key, Value, _) :-
-  format("Configuration already exists '~w' => '~w'.~n", [Key, Value]),
-  halt(0).
+  format("Configuration already exists '~w' => '~w'.~n", [Key, Value]).
 
 validate_configuration(Key, Value, Status) :-
   hac_post(validate_configuration, [key(Key), val(Value)], JSON),
@@ -49,7 +48,7 @@ validate_configuration(Key, Value, Status) :-
   get_validation_status(JSON, Status).
 validate_configuration(Key, Value, _) :-
   format(string(Exception), "Invalid configuration '~w' => '~w'.", [Key, Value]),
-  throw(Exception).
+  throw(error(Exception)).
 
 get_validation_status(JSON, created) :-
   _{ isNew: true } :<< JSON.
@@ -62,7 +61,7 @@ remove_configuration(Key, success) :-
   hac_post(delete_configuration, [key(Key)]).
 remove_configuration(Key, _) :-
   format(string(Exception), "Could not remove configuration '~w'.", [Key]),
-  throw(Exception).
+  throw(error(Exception)).
 
 extract_configurations([], []).
 extract_configurations([element(_, Attributes, _)|Inputs], [Key=Value|Configurations]) :-
