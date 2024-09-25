@@ -66,9 +66,11 @@ format_response(Response, DOM) :-
   save_csrf_token(DOM).
 format_response(Response, Response).
 
-handle_exception(_) :-
+handle_exception(error(socket_error(wsaeconnrefused, _), _)) :-
   writeln(user_error, "Could not connect to HAC, is Hybris server running?"),
   halt(3).
+handle_exception(Exception) :-
+  throw(Exception).
 
 save_csrf_token(DOM) :-
   extract_csrf_token(DOM, CSRFToken),

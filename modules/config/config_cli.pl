@@ -64,12 +64,14 @@ output_result(filter_configurations, Configurations) :-
   maplist(write_configuration, Configurations).
 output_result(get_configuration, Value) :-
   writeln(Value).
-output_result(set_configuration, created) :-
-  writeln("Configuration created.").
-output_result(set_configuration, updated) :-
-  writeln("Configuration updated.").
-output_result(remove_configuration, success) :-
-  writeln("Configuration removed.").
+output_result(set_configuration, created(Key, Value)) :-
+  ansi_format([fg(green)], "Configuration created: '~w' => '~w'.~n", [Key, Value]).
+output_result(set_configuration, updated(Key, Value)) :-
+  ansi_format([fg(blue)], "Configuration updated: '~w' => '~w'.~n", [Key, Value]).
+output_result(set_configuration, unchanged(Key, Value)) :-
+  ansi_format([fg(yellow)], "Configuration already exists: '~w' => '~w'.~n", [Key, Value]).
+output_result(remove_configuration, success(Key)) :-
+  ansi_format([fg(red)], "Configuration removed: ~w.~n", [Key]).
 
 output_exception(Exception) :-
   writeln(user_error, Exception).
